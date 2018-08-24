@@ -10,8 +10,6 @@ services:
     volumes:
       - /var/lib/drone:/var/lib/drone/
     restart: always
-    environment:
-      - DRONE_OPEN=$DRONE_OPEN
 
   drone-agent:
     image: drone/agent:0.8
