@@ -5,12 +5,13 @@ if version[0] == "2":
 
 else:
     from io import StringIO
+
 from functools import partial
 from os import path
 from sys import modules
 
 from fabric.context_managers import cd
-from fabric.operations import run, put, get
+from fabric.operations import get, put, run
 from nginx_parse_emit import emit, utils
 from nginxparser import dumps
 from offregister_docker import ubuntu as docker
