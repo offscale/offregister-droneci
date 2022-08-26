@@ -10,8 +10,6 @@ from functools import partial
 from os import path
 from sys import modules
 
-from fabric.context_managers import cd
-from fabric.operations import get, put, run
 from nginx_parse_emit import emit, utils
 from nginxparser import dumps
 from offregister_docker import ubuntu as docker
@@ -35,7 +33,7 @@ def _json_bool(s):  # type: (any) -> str
 
 
 def install0(*args, **kwargs):
-    if not cmd_avail("go"):
+    if not cmd_avail(c, "go"):
         docker.install_docker0()
         docker.install_docker_user1()
         docker.install_docker_compose3()
@@ -77,11 +75,11 @@ def install0(*args, **kwargs):
     safe_dump(compose, sio, default_flow_style=False)
     sio.seek(0)
 
-    docker_dir = run("echo $HOME/docker/drone", quiet=True)
-    run("mkdir -p {docker}".format(docker=docker_dir))
-    with cd(docker_dir):
-        put(sio, "docker-compose.yaml")
-        return run("docker-compose up")
+    docker_dir = c.run("echo $HOME/docker/drone", hide=True).stdout.rstrip()
+    c.run("mkdir -p {docker}".format(docker=docker_dir))
+    with c.cd(docker_dir):
+        c.put(sio, "docker-compose.yaml")
+        return c.run("docker-compose up")
 
 
 def configure_nginx1(*args, **kwargs):
@@ -89,7 +87,7 @@ def configure_nginx1(*args, **kwargs):
         server_name=kwargs["SERVER_NAME"]
     )
     sio = StringIO()
-    get(nginx_conf, sio)
+    c.get(nginx_conf, sio)
     sio.seek(0)
 
     conf = sio.read()
@@ -108,6 +106,6 @@ def configure_nginx1(*args, **kwargs):
         )
     )
 
-    put(sio, nginx_conf)
+    c.put(sio, nginx_conf)
 
     return restart_systemd("nginx")
