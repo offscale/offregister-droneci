@@ -32,7 +32,7 @@ def _json_bool(s):  # type: (any) -> str
     return s
 
 
-def install0(*args, **kwargs):
+def install0(c, *args, **kwargs):
     if not cmd_avail(c, "go"):
         docker.install_docker0()
         docker.install_docker_user1()
@@ -82,7 +82,7 @@ def install0(*args, **kwargs):
         return c.run("docker-compose up")
 
 
-def configure_nginx1(*args, **kwargs):
+def configure_nginx1(c, *args, **kwargs):
     nginx_conf = "/etc/nginx/sites-available/{server_name}".format(
         server_name=kwargs["SERVER_NAME"]
     )
